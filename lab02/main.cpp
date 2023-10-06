@@ -11,23 +11,23 @@ int main() {
         {
         case '+':
             std::cout << a + b << std::endl;
-            std::cout << a.to_decimal() << op << b.to_decimal() << std::endl;
+            std::cout << a.to_decimal() << ' ' << op << ' ' << b.to_decimal() << std::endl;
             break;
         case '-':
             std::cout << a - b << std::endl;
-            std::cout << a.to_decimal() << op << b.to_decimal() << std::endl;
+            std::cout << a.to_decimal() << ' ' << op << ' ' << b.to_decimal() << std::endl;
             break;
         case '=':
             std::cout << (a == b) << std::endl;
-            std::cout << a.to_decimal() << op << b.to_decimal() << std::endl;
+            std::cout << a.to_decimal() << ' ' << op << ' ' << b.to_decimal() << std::endl;
             break;
         case '>':
             std::cout << (a > b) << std::endl;
-            std::cout << a.to_decimal() << op << b.to_decimal() << std::endl;
+            std::cout << a.to_decimal() << ' ' << op << ' ' << b.to_decimal() << std::endl;
             break;
         case '<':
             std::cout << (a < b) << std::endl;
-            std::cout << a.to_decimal() << op << b.to_decimal() << std::endl;
+            std::cout << a.to_decimal() << ' ' << op << ' ' << b.to_decimal() << std::endl;
             break;
         default:
             throw std::invalid_argument("There's no such operation for Twelve");

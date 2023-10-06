@@ -72,7 +72,7 @@ int64_t Twelve::to_decimal() const noexcept {
 }
 
 Twelve Twelve::operator+(const Twelve &other) {
-    const std::vector<unsigned char> *a, *b;
+    const std::vector<unsigned char> *a, *b; // a > b
     if (array.size() < other.array.size()){
         a = &other.array;
         b = &array;
@@ -110,12 +110,12 @@ Twelve Twelve::operator-(const Twelve &other) {
     int remain = 0;
     for (int i = 0; i < other.array.size(); ++i) {
         int val = to_int(array[i]) - to_int(other.array[i]) - remain;
-        result.array[i] = to_char((val % 12 + 12) % 12);
+        result.array[i] = to_char((val + 12) % 12);
         remain = val < 0 ? 1 : 0;
     }
     if (array.size() > other.array.size())
         result.array[other.array.size()] = to_char(to_int(array[other.array.size()]) - remain);
-    while(result.array[result.array.size() - 1] == '0') {
+    while(result.array[result.array.size() - 1] == '0' && result.size() != 1) {
         result.array.pop_back();
     }
 
