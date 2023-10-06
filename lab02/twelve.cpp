@@ -54,9 +54,10 @@ Twelve::Twelve(const Twelve& other) {
     _size = other._size;
 }
 Twelve::Twelve(Twelve&& other) noexcept {
-    array = new unsigned char[other._size];
-    std::memcpy(array, other.array, other._size);
+    array = other.array;
     _size = other._size;
+    other.array = nullptr;
+    other._size = 0;
 }
 Twelve::~Twelve() { }
 
