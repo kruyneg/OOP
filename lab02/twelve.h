@@ -5,7 +5,9 @@
 #include <iostream>
 
 class Twelve {
-    std::vector<unsigned char> array;
+    unsigned char *array;
+    size_t _size;
+    void resize(size_t);
 public:
     Twelve();
     Twelve(const size_t &, unsigned char);

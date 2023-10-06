@@ -1,15 +1,35 @@
 #include "twelve.h"
 #include <cmath>
+#include <cstring>
 
-Twelve::Twelve() : array(1, '0') {}
+void Twelve::resize(size_t size) {
+    unsigned char* new_array = new unsigned char[size];
+
+    std::memcpy( new_array, array, size * sizeof(unsigned char));
+
+    _size = size;
+    delete [] array;
+    array = new_array;
+}
+
+Twelve::Twelve() {
+    array = new unsigned char;
+    *array = '0';
+    _size = 1;
+}
 Twelve::Twelve(const size_t & n, unsigned char t = '0') {
     if (!((t >= 'A' && t <= 'B') || (t >= '0' && t <= '9')))
         throw std::invalid_argument("character isn't a twelve digit");
-    array.resize(n, t);
+    array = new unsigned char [n];
+    _size = n;
+    for (int i = 0; i < _size; ++i) {
+        array[i] = t;
+    }
 }
 Twelve::Twelve(const std::initializer_list<unsigned char> &t) {
-    array.resize(t.size());
-    
+    array = new unsigned char[t.size()];
+    _size = t.size();
+
     int i = t.size() - 1;
     for (unsigned char elem : t) {
         if (!((elem >= 'A' && elem <= 'B') || (elem >= '0' && elem <= '9')))
@@ -18,17 +38,25 @@ Twelve::Twelve(const std::initializer_list<unsigned char> &t) {
     }
 }
 Twelve::Twelve(const std::string &t) {
-    for (int i = t.size() - 1; i >= 0; --i) {
-        if (!((t[i] >= 'A' && t[i] <= 'B') || (t[i] >= '0' && t[i] <= '9')))
+    array = new unsigned char[t.size()];
+    _size = t.size();
+    
+    int i = t.size() - 1;
+    for (unsigned char elem : t) {
+        if (!((elem >= 'A' && elem <= 'B') || (elem >= '0' && elem <= '9')))
             throw std::invalid_argument("character isn't a twelve digit");
-        array.push_back(t[i]);
+        array[i--] = elem;
     }
 }
 Twelve::Twelve(const Twelve& other) {
-    array = other.array;
+    array = new unsigned char[other._size];
+    std::memcpy(array, other.array, other._size);
+    _size = other._size;
 }
 Twelve::Twelve(Twelve&& other) noexcept {
-    array = other.array;
+    array = new unsigned char[other._size];
+    std::memcpy(array, other.array, other._size);
+    _size = other._size;
 }
 Twelve::~Twelve() { }
 
@@ -51,13 +79,13 @@ int to_int(unsigned char c) {
 
 // Number of elements
 size_t Twelve::size() const noexcept {
-    return array.size();
+    return _size;
 }
 
 // Return the value as a string
 std::string Twelve::to_string() const noexcept {
     std::string result;
-    for (int i = array.size() - 1; i >= 0; --i) {
+    for (int i = _size - 1; i >= 0; --i) {
         result += array[i];
     }
     return result;
@@ -65,37 +93,44 @@ std::string Twelve::to_string() const noexcept {
 // Return a number in decimal notation
 int64_t Twelve::to_decimal() const noexcept {
     int64_t result = 0;
-    for (int i = 0; i < array.size(); ++i) {
+    for (int i = 0; i < _size; ++i) {
         result += to_int(array[i]) * std::pow(12, i);
     }
     return result;
 }
 
 Twelve Twelve::operator+(const Twelve &other) {
-    const std::vector<unsigned char> *a, *b; // a > b
-    if (array.size() < other.array.size()){
-        a = &other.array;
-        b = &array;
+    const unsigned char *a, *b; // a > b
+    size_t size_a, size_b;
+    if (_size< other._size){
+        a = other.array;
+        size_a = other._size;
+        b = array;
+        size_b = _size;
     }
     else {
-        a = &array;
-        b = &other.array;
+        b = other.array;
+        a = array;
+        size_a = _size;
+        size_b = other._size;
+
     }
-    Twelve result = Twelve(a->size(), '0');
+    Twelve result = Twelve(size_a, '0');
 
     int remain = 0;
-    for (int i = 0; i < b->size(); ++i) {
-        int val = to_int((*a)[i]) + to_int((*b)[i]) + remain;
+    for (int i = 0; i < size_b; ++i) {
+        int val = to_int(a[i]) + to_int(b[i]) + remain;
         result.array[i] = to_char(val % 12);
         remain = val / 12;
     }
-    for (int i = b->size(); i < a->size(); ++i) {
-        int val = to_int((*a)[i]) + remain;
+    for (int i = size_b; i < size_a; ++i) {
+        int val = to_int(a[i]) + remain;
         result.array[i] = to_char(val % 12);
         remain = val / 12;
     }
     if (remain > 0) {
-        result.array.push_back(to_char(remain));
+        result.resize(_size + 1);
+        result.array[result._size - 1] = to_char(remain);
     }
 
     return result;
@@ -108,34 +143,48 @@ Twelve Twelve::operator-(const Twelve &other) {
     }
 
     int remain = 0;
-    for (int i = 0; i < other.array.size(); ++i) {
+    for (int i = 0; i < other._size; ++i) {
         int val = to_int(array[i]) - to_int(other.array[i]) - remain;
         result.array[i] = to_char((val + 12) % 12);
         remain = val < 0 ? 1 : 0;
     }
-    if (array.size() > other.array.size())
-        result.array[other.array.size()] = to_char(to_int(array[other.array.size()]) - remain);
-    while(result.array[result.array.size() - 1] == '0' && result.size() != 1) {
-        result.array.pop_back();
+    if (_size > other._size)
+        result.array[other._size] = to_char(to_int(array[other._size]) - remain);
+    
+    int cnt_zero = 0;
+    for (int i = result._size - 1; i > 0; --i) {
+        if (result.array[i] == '0') {
+            ++cnt_zero;
+        }
+        else {
+            break;
+        }
     }
+    result.resize(result._size - cnt_zero);
 
     return result;
 }
 Twelve Twelve::operator=(const Twelve &other) {
-    array = other.array;
+    resize(other._size);
+
+    for (int i = 0; i < _size; ++i) {
+        array[i] = other.array[i];
+    }
+
     return *this;
 }
 Twelve Twelve::operator=(const std::string &s) {
     *this = Twelve(s);
+
     return *this;
 }
 bool Twelve::operator<(const Twelve &other) {
-    if (array.size() < other.array.size())
+    if (_size < other._size)
         return true;
-    if (array.size() > other.array.size())
+    if (_size > other._size)
         return false;
     
-    for (int i = array.size() - 1; i >= 0; --i) {
+    for (int i = _size - 1; i >= 0; --i) {
         if (array[i] < other.array[i]) {
             return true;
         }
@@ -147,12 +196,12 @@ bool Twelve::operator<(const Twelve &other) {
     return false;
 }
 bool Twelve::operator>(const Twelve &other) {
-    if (array.size() > other.array.size())
+    if (_size > other._size)
         return true;
-    if (array.size() < other.array.size())
+    if (_size < other._size)
         return false;
     
-    for (int i = array.size() - 1; i >= 0; --i) {
+    for (int i = _size - 1; i >= 0; --i) {
         if (array[i] > other.array[i]) {
             return true;
         }
@@ -164,10 +213,10 @@ bool Twelve::operator>(const Twelve &other) {
     return false;
 }
 bool Twelve::operator==(const Twelve &other) {
-    if (array.size() != other.array.size())
+    if (_size != other._size)
         return false;
     
-    for (int i = array.size() - 1; i >= 0; --i) {
+    for (int i = _size - 1; i >= 0; --i) {
         if (array[i] != other.array[i]) {
             return false;
         }
