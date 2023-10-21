@@ -59,7 +59,11 @@ Twelve::Twelve(Twelve&& other) noexcept {
     other.array = nullptr;
     other._size = 0;
 }
-Twelve::~Twelve() { }
+Twelve::~Twelve() {
+    delete[] array;
+    _size = 0;
+    array = nullptr;
+}
 
 unsigned char to_char(int n) {
     if (n < 10) {
@@ -103,7 +107,7 @@ int64_t Twelve::to_decimal() const noexcept {
 Twelve Twelve::operator+(const Twelve &other) {
     const unsigned char *a, *b; // a > b
     size_t size_a, size_b;
-    if (_size< other._size){
+    if (_size < other._size){
         a = other.array;
         size_a = other._size;
         b = array;
@@ -130,7 +134,7 @@ Twelve Twelve::operator+(const Twelve &other) {
         remain = val / 12;
     }
     if (remain > 0) {
-        result.resize(_size + 1);
+        result.resize(result._size + 1);
         result.array[result._size - 1] = to_char(remain);
     }
 
@@ -149,9 +153,12 @@ Twelve Twelve::operator-(const Twelve &other) {
         result.array[i] = to_char((val + 12) % 12);
         remain = val < 0 ? 1 : 0;
     }
-    if (_size > other._size)
-        result.array[other._size] = to_char(to_int(array[other._size]) - remain);
-    
+    for (int i = other._size; i < _size; ++i) {
+        int val = to_int(array[i]) - remain;
+        result.array[i] = to_char((val + 12) % 12);
+        remain = val < 0 ? 1 : 0;
+    }
+
     int cnt_zero = 0;
     for (int i = result._size - 1; i > 0; --i) {
         if (result.array[i] == '0') {
