@@ -4,12 +4,19 @@
 
 void Twelve::resize(size_t size) {
     unsigned char* new_array = new unsigned char[size];
+    std::cout << "alloc\tOK\n";
 
-    std::memcpy( new_array, array, size * sizeof(unsigned char));
+    // std::memcpy( new_array, array, size * sizeof(unsigned char));
+    for (int i = 0; i < _size; ++i) {
+        new_array[i] = array[i];
+    }
+    std::cout << "memcpy\tOK\n" << "size of array: " << _size << std::endl;
 
     _size = size;
-    delete [] array;
+    delete[] array;
+    std::cout << "delete\tOK\n";
     array = new_array;
+    new_array = nullptr;
 }
 
 Twelve::Twelve() {
