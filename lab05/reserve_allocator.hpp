@@ -4,7 +4,6 @@
 template<class T, uint64_t MAX_SIZE = 1000>
 class Reserve_Allocator {
     std::vector<T> buffer;
-    // std::vector<uint64_t> free_points;
     std::vector<uint64_t> free_indexes;
 public:
     using value_type = T;
@@ -13,7 +12,7 @@ public:
     using size_type = std::size_t;
 
     Reserve_Allocator():
-    buffer(MAX_SIZE), /* free_points(MAX_SIZE), */ free_indexes(MAX_SIZE) {
+    buffer(MAX_SIZE), free_indexes(MAX_SIZE) {
         for (int i = 0; i < MAX_SIZE; ++i) {
             free_indexes[i] = i;
         }
@@ -35,24 +34,11 @@ public:
             result = &buffer[free_indexes[free_indexes.size() - n]];
             free_indexes.resize(free_indexes.size() - n);
         }
-        // uint64_t taken = MAX_SIZE;
-        // for (uint64_t index : free_indexes) {
-        //     if (free_points[index] >= n) {
-        //         result = &buffer[index];
-        //         taken = index;
-        //         break;
-        //     }
-        // }
-        // if (taken == MAX_SIZE)
-        //     throw std::bad_alloc("There are no more memory in buffer");
-        // for (int i = taken; i < taken + n; ++i) {
-        //     free_points[i] = 0;
-        // }
         return result;
     }
 
     void deallocate(pointer p, size_t n) {
-        uint64_t index = (p - &buffer[0]) / sizeof(value_type);
+        uint64_t index = (p - &buffer[0]);
         if (n == 1) {
             free_indexes.push_back(index);
         }

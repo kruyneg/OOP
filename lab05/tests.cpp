@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "list.hpp"
-#include "reserve_allocator.hpp"
+#include "perfect_allocator.hpp"
 
 TEST(Test_List, constructors) {
     List<int> a;
@@ -149,14 +149,18 @@ TEST(Test_List, operators) {
 TEST(Test_Allocator, numerous_allocation) {
     Reserve_Allocator<int, 100> alloc;
     ASSERT_ANY_THROW(alloc.allocate(101));
-    int* arr = alloc.allocate(4); 
+    int* arr1 = alloc.allocate(4); 
+    int* arr2 = alloc.allocate(2);
     for (int i = 0; i < 4; ++i) {
-        arr[i] = i;
+        arr1[i] = i;
     }
     for (int i = 0; i < 4; ++i) {
-        ASSERT_EQ(arr[i], i);
+        ASSERT_EQ(arr1[i], i);
     }
-    alloc.deallocate(arr, 4);
+    alloc.deallocate(arr1, 4);
+    int* arr3 = alloc.allocate(6);
+    alloc.deallocate(arr2, 2);
+    alloc.deallocate(arr3, 6);
 }
 
 TEST(Test_Allocator, allocation_by_one_object) {
@@ -176,10 +180,12 @@ TEST(Test_Allocator, allocation_by_one_object) {
 
 TEST(Test_Allocator, allocation_for_vector) {
     std::vector<int, Reserve_Allocator<int>> v(4, 0);
+    std::vector<int> v2(4, 0);
     v.resize(5, 1);
+    v2.resize(5, 1);
     ASSERT_EQ(v.size(), 5);
     for (int i = 0; i < 5; ++i) {
-        ASSERT_EQ(v[i], 1);
+        ASSERT_EQ(v[i], v2[i]);
     }
 }
 

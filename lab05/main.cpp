@@ -3,25 +3,17 @@
 #include "list.hpp"
 #include "reserve_allocator.hpp"
 
-struct data {
-    int* val;
-
-    ~data() {
-        delete val;
-    }
-};
-
 int main() {
 
-    // std::map<int, int, std::less<int>, Reserve_Allocator<std::pair<const int, int>>> m;
-    // m[0] = 1;
-    // m[1] = 1;
-    // for (int i = 2; i <= 9; ++i) {
-    //     m[i] = m[i - 1] * i;
-    // }
-    // for (std::pair<int, int> elem : m) {
-    //     std::cout << elem.first << ' ' << elem.second << std::endl;
-    // }
+    std::map<int, int, std::less<int>, Reserve_Allocator<std::pair<const int, int>>> m;
+    m[0] = 1;
+    m[1] = 1;
+    for (int i = 2; i <= 9; ++i) {
+        m[i] = m[i - 1] * i;
+    }
+    for (std::pair<int, int> elem : m) {
+        std::cout << elem.first << ' ' << elem.second << std::endl;
+    }
 
     List<int, Reserve_Allocator<int>> list;
     std::string query;

@@ -1,11 +1,5 @@
 #pragma once
 #include <memory>
-#include <concepts>
-
-// template<class T>
-// concept Allocator_type = requires std::allocator_traits<T>;
-
-// std::allocator_traits<std::allocator<int>>::
 
 template<class T, class Alloc = std::allocator<T>>
 class List {
@@ -171,8 +165,6 @@ public:
         for (int i = 0; i <= other.size(); ++i) {
             data[i] = Alloc_Item_traits::allocate(_m_alloc, 1);
         }
-        // {Alloc_Item_traits::allocate(_m_alloc, other.size() + 1)};
-
 
         _m_head = data[0]; _m_tail = data[other.size()];
         _m_head->prev = _m_tail->next = nullptr;
@@ -190,15 +182,12 @@ public:
 
         _m_size = other.size();
     }
-    List(List&&) = default;
 
     ~List() noexcept {
         Iterator i = this->begin();
         while (i != this->end()) {
             Iterator tmp(i.m_item->next);
-            // std::cout << i.m_item << std::endl;
             i->~T();
-            // Alloc_Item_traits::destroy(_m_alloc, i.m_item);
             Alloc_Item_traits::deallocate(_m_alloc, i.m_item, 1);
             i = tmp;
         } 
@@ -249,19 +238,6 @@ public:
         ++_m_size;
         return result;
     }
-    // Iterator insert(Const_Iterator itr, const T& val) {
-    //     Iterator result(Alloc_Item_traits::allocate(_m_alloc, 1));
-    //     result.m_item->prev = itr.m_item->prev;
-    //     result.m_item->next = itr.m_item;
-    //     result.m_item->value = val;
-    //     result.m_item->prev->next = result.m_item;
-    //     itr.m_item->prev = result.m_item;
-    //     if (itr == this->begin()) {
-    //         _m_head = result.m_item;
-    //     }
-    //     ++_m_size;
-    //     return result;
-    // }
 
     Iterator push_back(const T& val) {
         Iterator result = this->end();
@@ -278,7 +254,6 @@ public:
             throw std::underflow_error("The List is empty");
         Iterator result = --this->end();
         Alloc_Item_traits::deallocate(_m_alloc, _m_tail, 1);
-        // _m_alloc.deallocate(_m_tail);
         _m_tail = result.m_item;
         _m_tail->next = nullptr;
         --_m_size;
@@ -296,7 +271,6 @@ public:
         }
         result.m_item->prev = itr.m_item->prev;
         Alloc_Item_traits::deallocate(_m_alloc, itr.m_item, 1);
-        // _m_alloc.deallocate(itr.m_item, 1);
         --_m_size;
         return result;
     }
@@ -304,28 +278,6 @@ public:
     List& operator=(const List<T, Alloc>& other) {
         if (this->size() != other.size()) {
             this->resize(other.size());
-
-            // Item* data {Alloc_Item_traits::allocate(_m_alloc, other.size() + 1)};
-            // for (Iterator i = this->begin(); i != this->end(); ++i) {
-            //     Alloc_Item_traits::destroy(_m_alloc, i.m_item);
-            //     Alloc_Item_traits::deallocate(_m_alloc, i.m_item, 1);
-            //     // _m_alloc.destroy(&(*i));
-            //     // _m_alloc.deallocate(&(*i), 1);
-            // }
-            // _m_head = data; _m_tail = data + other.size();
-            // _m_head->prev = _m_tail->next = nullptr;
-            // _m_head->next = data + 1;
-            // _m_tail->prev = data + (other.size() - 1);
-
-            // auto itr = other.begin();
-            // _m_head->value = *itr;
-            // ++itr;
-            // for (int i = 1; i < other.size(); ++i) {
-            //     data[i].prev = data + (i - 1);
-            //     data[i].next = data + (i + 1);
-            //     data[i].value = *itr++;
-            // }
-            // _m_size = other.size();
         }
         auto itr1 = this->begin(), itr2 = other.begin();
         while (itr1 != this->end() && itr2 != other.end()) {
@@ -335,19 +287,11 @@ public:
         return *this;
     }
 
-    // List& operator=(List<T>&& other) {
-    //     _m_head = std::move(other._m_head);
-    //     _m_tail = std::move(other._m_tail);
-    //     _m_alloc = std::move(other._m_alloc);
-    //     _m_size = other.size();
-    //     return *this;
-    // }
-
-    size_t size() const {
+    size_t size() const noexcept {
         return _m_size;
     }
 
-    bool empty() const {
+    bool empty() const noexcept {
         return _m_size == 0;
     }
 
