@@ -26,7 +26,7 @@ public:
         using pointer = T*;
         using reference = T&;
         using difference_type = ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
+        using iterator_category = std::bidirectional_iterator_tag;
 
         Iterator(): m_item() {}
         Iterator(Item* x): m_item(x) {}
@@ -72,7 +72,7 @@ public:
         using pointer = const T*;
         using reference = const T&;
         using difference_type = ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
+        using iterator_category = std::bidirectional_iterator_tag;
 
         Const_Iterator(): m_item() {}
         Const_Iterator(const Item* x): m_item(x) {}

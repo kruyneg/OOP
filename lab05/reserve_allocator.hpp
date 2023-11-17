@@ -1,6 +1,8 @@
 #include <vector>
 #include <memory>
 
+// аллокатор может некорректно работать с вектором и массивом !
+
 template<class T, uint64_t MAX_SIZE = 1000>
 class Reserve_Allocator {
     std::vector<T> buffer;
