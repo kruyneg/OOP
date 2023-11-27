@@ -19,14 +19,6 @@ void Thug::accept(NPC* attacker, const int& distance) {
     }
 }
 
-void Thug::attach(Observer* observer) {
-    NPC::observers.push_back(observer);
-}
-void Thug::detach(Observer* observer) {
-    NPC::observers.erase(
-        std::find(NPC::observers.begin(), NPC::observers.end(), observer));
-}
-
 std::ostream& operator<<(std::ostream& out, const Thug& other) {
     return out << "Thug {" << other.NPC::x << ", " << other.NPC::y << '}';
 }

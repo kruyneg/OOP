@@ -19,14 +19,6 @@ void Elf::accept(NPC* attacker, const int& distance) {
     }
 }
 
-void Elf::attach(Observer* observer) {
-    NPC::observers.push_back(observer);
-}
-void Elf::detach(Observer* observer) {
-    NPC::observers.erase(
-        std::find(NPC::observers.begin(), NPC::observers.end(), observer));
-}
-
 std::ostream& operator<<(std::ostream& out, const Elf& other) {
     return out << "Elf {" << other.NPC::x << ", " << other.NPC::y << '}';
 }

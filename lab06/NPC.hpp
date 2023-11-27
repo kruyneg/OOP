@@ -27,8 +27,8 @@ public:
 
     virtual void accept(NPC*, const int&) = 0;
 
-    virtual void attach(Observer*) = 0;
-    virtual void detach(Observer*) = 0;
+    virtual void attach(Observer*);
+    virtual void detach(Observer*);
     virtual void notify(NPC*, bool);
 
     virtual bool is_close(const NPC&, const int&) const;

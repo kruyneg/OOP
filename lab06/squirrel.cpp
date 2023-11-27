@@ -19,14 +19,6 @@ void Squirrel::accept(NPC* attacker, const int& distance) {
     }
 }
 
-void Squirrel::attach(Observer* observer) {
-    NPC::observers.push_back(observer);
-}
-void Squirrel::detach(Observer* observer) {
-    NPC::observers.erase(
-        std::find(NPC::observers.begin(), NPC::observers.end(), observer));
-}
-
 std::ostream& operator<<(std::ostream& out, const Squirrel& other) {
     return out << "Squirrel {" << other.NPC::x << ", " << other.NPC::y << '}';
 }

@@ -9,10 +9,10 @@
 
 void load(std::vector<std::shared_ptr<NPC>>& array, std::ifstream& file) {
     while (file) {
-        array.push_back(factory(file));
+        auto tmp = factory(file);
+        if (tmp)
+            array.push_back(tmp);
     }
-    if (!array.empty() && array.back().get() == nullptr)
-        array.pop_back();
 }
 
 void save(std::vector<std::shared_ptr<NPC>>& array, std::ofstream& file) {
@@ -50,14 +50,19 @@ int main() {
             auto new_npc = factory(std::cin);
             persons.push_back(new_npc);
         }
-        
+        else if (query == "show") {
+            for (auto& elem : persons) {
+                elem->print(std::cout);
+                std::cout << std::endl;
+            }
+        }
     } while(query != "fight");
 
     for (auto& elem : persons) {
         elem->attach(&cobs);
         elem->attach(&fobs);
     }
-    std::cout << "Input a distance" << std::endl;
+    std::cout << "Enter a distance" << std::endl;
     
     int distance;
     std::cin >> distance;
