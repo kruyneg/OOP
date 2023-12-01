@@ -1,7 +1,7 @@
 #include "NPC.hpp"
 #include <algorithm>
 
-bool NPC::is_close(const NPC& other, const int& distance) const {
+bool NPC::is_close(const NPC& other, const int& distance) const noexcept {
     return (x - other.x) * (x - other.x)
         + (y - other.y) * (y - other.y) 
         <= distance * distance;
@@ -26,3 +26,5 @@ void NPC::detach(Observer* observer) {
     observers.erase(
         std::find(NPC::observers.begin(), NPC::observers.end(), observer));
 }
+
+bool NPC::is_alive() const noexcept { return alive; }

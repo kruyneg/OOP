@@ -48,7 +48,8 @@ int main() {
         }
         else if (query == "add") {
             auto new_npc = factory(std::cin);
-            persons.push_back(new_npc);
+            if (new_npc)
+                persons.push_back(new_npc);
         }
         else if (query == "show") {
             for (auto& elem : persons) {

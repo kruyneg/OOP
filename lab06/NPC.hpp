@@ -3,12 +3,6 @@
 #include <memory>
 #include "observer.hpp"
 
-enum class NPC_type {
-    unknown,
-    squirrel,
-    thug,
-    elf
-};
 
 class Squirrel;
 class Thug;
@@ -19,6 +13,8 @@ protected:
     std::list<Observer*> observers;
     int x;
     int y;
+    std::string name;
+    bool alive;
 public:
     NPC() = default;
     ~NPC() = default;
@@ -31,7 +27,8 @@ public:
     virtual void detach(Observer*);
     virtual void notify(NPC*, bool);
 
-    virtual bool is_close(const NPC&, const int&) const;
+    virtual bool is_close(const NPC&, const int&) const noexcept;
+    virtual bool is_alive() const noexcept;
 
     friend std::ostream& operator<<(std::ostream&, const NPC&);
 };

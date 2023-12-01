@@ -15,3 +15,18 @@ add_executable(lab_06
     squirrel.cpp
     thug.cpp
     elf.cpp)
+
+enable_testing()
+add_executable(
+    tests06
+    tests.cpp
+    observer.cpp
+    factory.cpp
+    NPC.cpp
+    squirrel.cpp
+    thug.cpp
+    elf.cpp)
+
+target_link_libraries(tests06 ${GTEST_LIBRARIES})
+
+add_test(NAME TESTS COMMAND tests06)

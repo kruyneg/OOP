@@ -4,7 +4,7 @@
 
 class Squirrel: public NPC {
 public:
-    Squirrel(const int&, const int&);
+    Squirrel(const int&, const int&, const std::string&);
 
     void print(std::ostream&) override;
 

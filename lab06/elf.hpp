@@ -4,7 +4,7 @@
 
 class Elf: public NPC {
 public:
-    Elf(const int&, const int&);
+    Elf(const int&, const int&, const std::string&);
 
     void print(std::ostream&) override;
 

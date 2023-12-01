@@ -39,4 +39,4 @@ b. У каждого типа объекта помимо координат д�
 [observer.hpp](observer.hpp) - заголовочный файл содержаций `TextObserver` и `FileObserver`.\
 [observer.cpp](observer.cpp) - реализация `TextObserver` и `FileObserver`.\
 [factory.hpp](factory.hpp) - заголовочный файл фабрик.\
-[factory.cpp](factory.cpp) - реализация фабрик.\
+[factory.cpp](factory.cpp) - реализация фабрик.
